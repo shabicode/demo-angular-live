@@ -1,0 +1,494 @@
+<div class="control-flow-container">
+  <h1>🎯 Control Flow en Angular 17+</h1>
+  <p class="subtitle">Ejemplos de &#64;if, &#64;for, &#64;switch, &#64;let, &#64;empty y más</p>
+
+  <!-- ========== SECCIÓN 1: @IF (Condicionales) ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>✅ 1. &#64;if - Renderizado Condicional</h2>
+      <p class="description">
+        Reemplaza <code>*ngIf</code>. Muestra u oculta contenido según una condición.
+        Más simple y legible que la sintaxis anterior.
+      </p>
+    </div>
+
+    <div class="demo-area">
+      <!-- Ejemplo básico @if -->
+      <div class="demo-card">
+        <h3>Ejemplo 1: &#64;if básico</h3>
+        
+        <div class="control-panel">
+          <button class="btn btn-primary" (click)="toggleLogin()">
+            {{ isLoggedIn ? '🔓 Cerrar Sesión' : '🔐 Iniciar Sesión' }}
+          </button>
+        </div>
+
+        <div class="result-box">
+          @if (isLoggedIn) {
+            <div class="success-message">
+              ✅ ¡Bienvenido! Has iniciado sesión correctamente.
+            </div>
+          }
+
+          @if (!isLoggedIn) {
+            <div class="warning-message">
+              ⚠️ Por favor, inicia sesión para continuar.
+            </div>
+          }
+        </div>
+
+        <div class="code-preview">
+          <pre>&#64;if (isLoggedIn) {{ '{' }}
+  &lt;div&gt;Bienvenido!&lt;/div&gt;
+{{ '}' }}</pre>
+        </div>
+      </div>
+
+      <!-- Ejemplo @if / @else -->
+      <div class="demo-card">
+        <h3>Ejemplo 2: &#64;if con &#64;else</h3>
+        
+        <div class="control-panel">
+          <button class="btn btn-secondary" (click)="togglePremium()">
+            {{ isPremium ? '⭐ Desactivar Premium' : '⭐ Activar Premium' }}
+          </button>
+        </div>
+
+        <div class="result-box">
+          @if (isPremium) {
+            <div class="premium-badge">
+              ⭐ Usuario Premium - Acceso total
+            </div>
+          } @else {
+            <div class="basic-badge">
+              👤 Usuario Básico - Características limitadas
+            </div>
+          }
+        </div>
+
+        <div class="code-preview">
+          <pre>&#64;if (isPremium) {{ '{' }}
+  &lt;div&gt;Premium&lt;/div&gt;
+{{ '}' }} &#64;else {{ '{' }}
+  &lt;div&gt;Básico&lt;/div&gt;
+{{ '}' }}</pre>
+        </div>
+      </div>
+
+      <!-- Ejemplo @if / @else if -->
+      <div class="demo-card full-width">
+        <h3>Ejemplo 3: &#64;if con múltiples condiciones</h3>
+        
+        <div class="control-panel">
+          <button class="btn btn-info" (click)="simulateLoading()">⏳ Simular Carga</button>
+          <button class="btn btn-danger" (click)="simulateError()">❌ Simular Error</button>
+          <button class="btn btn-success" (click)="clearError()">✅ Limpiar</button>
+        </div>
+
+        <div class="result-box">
+          @if (loadingData) {
+            <div class="loading-message">
+              <div class="spinner"></div>
+              ⏳ Cargando datos del servidor...
+            </div>
+          } @else if (errorMessage) {
+            <div class="error-message">
+              ❌ {{ errorMessage }}
+            </div>
+          } @else {
+            <div class="success-message">
+              ✅ Datos cargados correctamente
+            </div>
+          }
+        </div>
+
+        <div class="code-preview">
+          <pre>&#64;if (loadingData) {{ '{' }}
+  &lt;div&gt;Cargando...&lt;/div&gt;
+{{ '}' }} &#64;else if (errorMessage) {{ '{' }}
+  &lt;div&gt;Error&lt;/div&gt;
+{{ '}' }} &#64;else {{ '{' }}
+  &lt;div&gt;Éxito&lt;/div&gt;
+{{ '}' }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SECCIÓN 2: @FOR (Bucles) ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🔄 2. &#64;for - Iteración sobre Listas</h2>
+      <p class="description">
+        Reemplaza <code>*ngFor</code>. Requiere obligatoriamente <code>track</code> para optimizar rendimiento.
+        Angular usa track para identificar qué elementos cambiaron.
+      </p>
+    </div>
+
+    <div class="demo-area">
+      <div class="demo-card full-width">
+        <h3>Lista de Productos (con &#64;for y track)</h3>
+        
+        <div class="control-panel">
+          <button class="btn btn-primary" (click)="addProduct()">➕ Agregar Producto</button>
+          <button class="btn btn-warning" (click)="resetProducts()">🔄 Restaurar Lista</button>
+          <button class="btn btn-danger" (click)="clearProducts()">🗑️ Limpiar Todo</button>
+        </div>
+
+        <div class="result-box">
+          <div class="products-grid">
+            @for (product of products; track product.id) {
+              <div class="product-card">
+                <div class="product-header">
+                  <h4>{{ product.name }}</h4>
+                  <span class="product-category">{{ product.category }}</span>
+                </div>
+                <div class="product-body">
+                  <p class="product-price">${{ product.price }}</p>
+                  <p class="product-stock" [class.out-of-stock]="product.stock === 0">
+                    📦 Stock: {{ product.stock }}
+                    @if (product.stock === 0) {
+                      <span class="badge-danger">Agotado</span>
+                    }
+                  </p>
+                </div>
+                <div class="product-footer">
+                  <button class="btn-small btn-danger" (click)="removeProduct(product.id)">
+                    ❌ Eliminar
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="code-preview">
+          <pre>&#64;for (product of products; track product.id) {{ '{' }}
+  &lt;div&gt;{{ '{{' }} product.name {{ '}}' }}&lt;/div&gt;
+{{ '}' }}
+
+<!-- El track es OBLIGATORIO para optimización --></pre>
+        </div>
+      </div>
+
+      <!-- Ejemplo con @empty -->
+      <div class="demo-card full-width">
+        <h3>&#64;for con &#64;empty (lista vacía)</h3>
+        
+        <div class="result-box">
+          @for (item of emptyList; track $index) {
+            <div>{{ item }}</div>
+          } @empty {
+            <div class="empty-message">
+              📭 No hay elementos en la lista. 
+              <br>
+              <em>Este mensaje aparece gracias a &#64;empty</em>
+            </div>
+          }
+        </div>
+
+        <div class="code-preview">
+          <pre>&#64;for (item of list; track $index) {{ '{' }}
+  &lt;div&gt;{{ '{{' }} item {{ '}}' }}&lt;/div&gt;
+{{ '}' }} &#64;empty {{ '{' }}
+  &lt;div&gt;Lista vacía&lt;/div&gt;
+{{ '}' }}</pre>
+        </div>
+      </div>
+
+      <!-- Variables contextuales de @for -->
+      <div class="demo-card full-width">
+        <h3>Variables Contextuales de &#64;for</h3>
+        
+        <div class="result-box">
+          <div class="context-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>$index</th>
+                  <th>$first</th>
+                  <th>$last</th>
+                  <th>$even</th>
+                  <th>$odd</th>
+                  <th>$count</th>
+                  <th>Producto</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (product of products; track product.id; let idx = $index; let isFirst = $first; let isLast = $last; let isEven = $even; let isOdd = $odd; let total = $count) {
+                  <tr [class.first-row]="isFirst" [class.last-row]="isLast" [class.even-row]="isEven" [class.odd-row]="isOdd">
+                    <td>{{ idx }}</td>
+                    <td>{{ isFirst ? '✅' : '❌' }}</td>
+                    <td>{{ isLast ? '✅' : '❌' }}</td>
+                    <td>{{ isEven ? '✅' : '❌' }}</td>
+                    <td>{{ isOdd ? '✅' : '❌' }}</td>
+                    <td>{{ total }}</td>
+                    <td>{{ product.name }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="code-preview">
+          <pre>&#64;for (item of list; track item.id; let i = $index) {{ '{' }}
+  &lt;div&gt;Índice: {{ '{{' }} i {{ '}}' }}&lt;/div&gt;
+{{ '}' }}
+
+Variables: $index, $first, $last, $even, $odd, $count</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SECCIÓN 3: @SWITCH ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🔀 3. &#64;switch - Selección Múltiple</h2>
+      <p class="description">
+        Reemplaza <code>*ngSwitch</code>. Útil cuando tienes múltiples casos posibles.
+        Más limpio que múltiples &#64;if / &#64;else if.
+      </p>
+    </div>
+
+    <div class="demo-area">
+      <div class="demo-card full-width">
+        <h3>Estado del Pedido (Order Status)</h3>
+        
+        <div class="control-panel">
+          <button class="btn btn-secondary" (click)="setOrderStatus('pending')">⏳ Pendiente</button>
+          <button class="btn btn-info" (click)="setOrderStatus('processing')">⚙️ Procesando</button>
+          <button class="btn btn-primary" (click)="setOrderStatus('shipped')">🚚 Enviado</button>
+          <button class="btn btn-success" (click)="setOrderStatus('delivered')">✅ Entregado</button>
+          <button class="btn btn-danger" (click)="setOrderStatus('cancelled')">❌ Cancelado</button>
+          <div class="divider"></div>
+          <button class="btn btn-warning" (click)="nextOrderStatus()">➡️ Siguiente Estado</button>
+        </div>
+
+        <div class="result-box">
+          <div class="status-display" [style.background-color]="getStatusColor(orderStatus)">
+            @switch (orderStatus) {
+              @case ('pending') {
+                <div class="status-content">
+                  <h3>⏳ Pedido Pendiente</h3>
+                  <p>Tu pedido ha sido recibido y está en espera de confirmación.</p>
+                </div>
+              }
+              @case ('processing') {
+                <div class="status-content">
+                  <h3>⚙️ Procesando Pedido</h3>
+                  <p>Estamos preparando tu pedido para el envío.</p>
+                </div>
+              }
+              @case ('shipped') {
+                <div class="status-content">
+                  <h3>🚚 Pedido Enviado</h3>
+                  <p>Tu pedido está en camino. Recibirás un código de tracking.</p>
+                </div>
+              }
+              @case ('delivered') {
+                <div class="status-content">
+                  <h3>✅ Pedido Entregado</h3>
+                  <p>¡Tu pedido ha sido entregado exitosamente!</p>
+                </div>
+              }
+              @case ('cancelled') {
+                <div class="status-content">
+                  <h3>❌ Pedido Cancelado</h3>
+                  <p>El pedido ha sido cancelado. Se procesará el reembolso.</p>
+                </div>
+              }
+              @default {
+                <div class="status-content">
+                  <h3>❓ Estado Desconocido</h3>
+                  <p>No se pudo determinar el estado del pedido.</p>
+                </div>
+              }
+            }
+          </div>
+        </div>
+
+        <div class="code-preview">
+          <pre>&#64;switch (orderStatus) {{ '{' }}
+  &#64;case ('pending') {{ '{' }}
+    &lt;div&gt;Pendiente&lt;/div&gt;
+  {{ '}' }}
+  &#64;case ('processing') {{ '{' }}
+    &lt;div&gt;Procesando&lt;/div&gt;
+  {{ '}' }}
+  &#64;default {{ '{' }}
+    &lt;div&gt;Desconocido&lt;/div&gt;
+  {{ '}' }}
+{{ '}' }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SECCIÓN 4: @LET (Variables Locales) ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>📌 4. &#64;let - Variables Locales en Templates</h2>
+      <p class="description">
+        Nueva característica de Angular 18. Permite crear variables locales en el template
+        para evitar cálculos repetidos y mejorar la legibilidad.
+      </p>
+    </div>
+
+    <div class="demo-area">
+      <div class="demo-card full-width">
+        <h3>Cálculo de Precio Final (con &#64;let)</h3>
+        
+        <div class="result-box">
+          @let basePrice = complexCalculation.value;
+          @let taxAmount = basePrice * complexCalculation.tax;
+          @let priceWithTax = basePrice + taxAmount;
+          @let discountAmount = priceWithTax * complexCalculation.discount;
+          @let finalPrice = priceWithTax - discountAmount;
+
+          <div class="calculation-display">
+            <div class="calc-row">
+              <span class="calc-label">💰 Precio Base:</span>
+              <span class="calc-value">${{ basePrice }}</span>
+            </div>
+            <div class="calc-row">
+              <span class="calc-label">📊 Impuesto ({{ complexCalculation.tax * 100 }}%):</span>
+              <span class="calc-value">+${{ taxAmount.toFixed(2) }}</span>
+            </div>
+            <div class="calc-row">
+              <span class="calc-label">💵 Precio con Impuesto:</span>
+              <span class="calc-value">${{ priceWithTax.toFixed(2) }}</span>
+            </div>
+            <div class="calc-row">
+              <span class="calc-label">🎁 Descuento ({{ complexCalculation.discount * 100 }}%):</span>
+              <span class="calc-value discount">-${{ discountAmount.toFixed(2) }}</span>
+            </div>
+            <div class="calc-row total">
+              <span class="calc-label">✅ Precio Final:</span>
+              <span class="calc-value">${{ finalPrice.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-preview">
+          <pre>&#64;let total = price * quantity;
+&#64;let tax = total * 0.16;
+&#64;let finalPrice = total + tax;
+
+&lt;div&gt;Total: {{ '{{' }} finalPrice {{ '}}' }}&lt;/div&gt;</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SECCIÓN 5: COMBINACIONES ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🎨 5. Combinación de Control Flow</h2>
+      <p class="description">
+        Puedes combinar &#64;if, &#64;for, &#64;switch dentro de un mismo componente
+        para crear interfaces dinámicas y complejas.
+      </p>
+    </div>
+
+    <div class="demo-area">
+      <div class="demo-card full-width">
+        <h3>Panel de Administración por Rol</h3>
+        
+        <div class="control-panel">
+          <button class="btn" (click)="setUserRole('admin')">👑 Admin</button>
+          <button class="btn" (click)="setUserRole('editor')">✏️ Editor</button>
+          <button class="btn" (click)="setUserRole('viewer')">👀 Viewer</button>
+          <button class="btn" (click)="setUserRole('guest')">🚶 Guest</button>
+        </div>
+
+        <div class="result-box">
+          <div class="user-panel">
+            <h3>{{ getRoleIcon(currentUser.role) }} {{ currentUser.name }} - Rol: {{ currentUser.role }}</h3>
+            
+            @switch (currentUser.role) {
+              @case ('admin') {
+                <div class="role-content admin">
+                  <h4>👑 Panel de Administrador</h4>
+                  <ul>
+                    <li>✅ Acceso total al sistema</li>
+                    <li>✅ Gestión de usuarios</li>
+                    <li>✅ Configuración avanzada</li>
+                    <li>✅ Reportes completos</li>
+                  </ul>
+                </div>
+              }
+              @case ('editor') {
+                <div class="role-content editor">
+                  <h4>✏️ Panel de Editor</h4>
+                  <ul>
+                    <li>✅ Crear y editar contenido</li>
+                    <li>✅ Publicar artículos</li>
+                    <li>❌ No puede gestionar usuarios</li>
+                  </ul>
+                </div>
+              }
+              @case ('viewer') {
+                <div class="role-content viewer">
+                  <h4>👀 Panel de Visualizador</h4>
+                  <ul>
+                    <li>✅ Ver contenido</li>
+                    <li>❌ No puede editar</li>
+                    <li>❌ No puede publicar</li>
+                  </ul>
+                </div>
+              }
+              @case ('guest') {
+                <div class="role-content guest">
+                  <h4>🚶 Panel de Invitado</h4>
+                  <ul>
+                    <li>⚠️ Acceso limitado</li>
+                    <li>⚠️ Solo contenido público</li>
+                  </ul>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RESUMEN FINAL ========== -->
+  <div class="section summary">
+    <h2>📚 Resumen de Control Flow</h2>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>&#64;if</h3>
+        <p>Renderizado condicional</p>
+        <code>&#64;if (condition) {{ '{' }}...{{ '}' }}</code>
+      </div>
+      <div class="summary-card">
+        <h3>&#64;for</h3>
+        <p>Iteración sobre listas</p>
+        <code>&#64;for (item of list; track item.id)</code>
+      </div>
+      <div class="summary-card">
+        <h3>&#64;switch</h3>
+        <p>Selección múltiple</p>
+        <code>&#64;switch (value) {{ '{' }} &#64;case (1) {{ '{' }}...{{ '}' }} {{ '}' }}</code>
+      </div>
+      <div class="summary-card">
+        <h3>&#64;let</h3>
+        <p>Variables locales</p>
+        <code>&#64;let result = calculate();</code>
+      </div>
+      <div class="summary-card">
+        <h3>&#64;empty</h3>
+        <p>Lista vacía en &#64;for</p>
+        <code>&#64;for (...) {{ '{' }}...{{ '}' }} &#64;empty {{ '{' }}...{{ '}' }}</code>
+      </div>
+      <div class="summary-card">
+        <h3>track</h3>
+        <p>Obligatorio en &#64;for</p>
+        <code>track item.id o track $index</code>
+      </div>
+    </div>
+  </div>
+</div>

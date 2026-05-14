@@ -1,0 +1,339 @@
+<div class="lifecycle-container">
+  <h1>⏰ Lifecycle Hooks en Angular</h1>
+  <p class="subtitle">Demostración interactiva del ciclo de vida de componentes</p>
+
+  <!-- ========== ORDEN DE EJECUCIÓN ========== -->
+  <div class="section execution-order">
+    <h2>📋 Orden de Ejecución de Lifecycle Hooks</h2>
+    <div class="order-flow">
+      <div class="flow-item constructor">
+        <span class="number">1</span>
+        <h3>constructor()</h3>
+        <p>Creación del componente</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-item" [class.active]="ngOnChangesCalled">
+        <span class="number">2</span>
+        <h3>ngOnChanges</h3>
+        <p>Cambios en @Input</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-item" [class.active]="ngOnInitCalled">
+        <span class="number">3</span>
+        <h3>ngOnInit</h3>
+        <p>Inicialización</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-item">
+        <span class="number">4</span>
+        <h3>ngDoCheck</h3>
+        <p>Detección de cambios</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-item">
+        <span class="number">5</span>
+        <h3>ngAfterContentInit</h3>
+        <p>Contenido inicializado</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-item" [class.active]="ngAfterViewInitCalled">
+        <span class="number">6</span>
+        <h3>ngAfterViewInit</h3>
+        <p>Vista inicializada</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="flow-item destroy">
+        <span class="number">7</span>
+        <h3>ngOnDestroy</h3>
+        <p>Destrucción</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PANEL DE CONTROL ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🎮 Panel de Control Interactivo</h2>
+      <p class="description">
+        Interactúa con el componente para ver cómo se ejecutan los lifecycle hooks.
+      </p>
+    </div>
+
+    <div class="control-grid">
+      <!-- Timer Demo -->
+      <div class="control-card">
+        <h3>⏱️ Timer Demo</h3>
+        <div class="counter-display">
+          <span class="counter-value">{{ counter }}</span>
+          <span class="counter-label">segundos</span>
+        </div>
+        <div class="button-group">
+          <button class="btn btn-success" (click)="startTimer()" [disabled]="timerRunning">
+            ▶️ Iniciar
+          </button>
+          <button class="btn btn-warning" (click)="stopTimer()" [disabled]="!timerRunning">
+            ⏸️ Detener
+          </button>
+          <button class="btn btn-secondary" (click)="resetTimer()">
+            🔄 Resetear
+          </button>
+        </div>
+        <p class="info-text">
+          ⚠️ Recuerda limpiar timers en <code>ngOnDestroy()</code> para evitar memory leaks
+        </p>
+      </div>
+
+      <!-- ViewChild Demo -->
+      <div class="control-card">
+        <h3>🎯 ViewChild Demo</h3>
+        <input
+          #messageInput
+          type="text"
+          [(ngModel)]="message"
+          placeholder="Escribe un mensaje..."
+          class="form-control"
+        />
+        <p class="input-value">Valor: <strong>{{ message || '(vacío)' }}</strong></p>
+        <div class="button-group">
+          <button class="btn btn-primary" (click)="focusInput()">
+            🎯 Enfocar Input
+          </button>
+          <button class="btn btn-secondary" (click)="clearMessage()">
+            ✖️ Limpiar
+          </button>
+        </div>
+        <p class="info-text">
+          ✅ ViewChild está disponible en <code>ngAfterViewInit()</code>
+        </p>
+      </div>
+
+      <!-- Change Detection Demo -->
+      <div class="control-card">
+        <h3>🔄 Change Detection Demo</h3>
+        <div class="value-display">
+          <span class="value-label">External Value:</span>
+          <span class="value-number">{{ externalValue }}</span>
+        </div>
+        <div class="button-group">
+          <button class="btn btn-info" (click)="triggerChangeDetection()">
+            🔄 Trigger ngOnChanges
+          </button>
+          <button class="btn btn-primary" (click)="simulateDataLoad()">
+            ⏳ Simular Carga
+          </button>
+        </div>
+        <p class="info-text">
+          📌 <code>ngOnChanges()</code> se ejecuta cuando cambian los @Input
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== LOG DE EVENTOS ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>📊 Log de Lifecycle Hooks en Tiempo Real</h2>
+      <button class="btn btn-danger btn-clear" (click)="clearLogs()">
+        🗑️ Limpiar Logs
+      </button>
+    </div>
+
+    <div class="logs-container">
+      @if (logs.length === 0) {
+        <div class="empty-logs">
+          📭 No hay logs todavía. Interactúa con el componente para ver los hooks en acción.
+        </div>
+      } @else {
+        <div class="logs-list">
+          @for (log of logs; track $index) {
+            <div class="log-entry" [style.border-left-color]="log.color">
+              <span class="log-icon">{{ getHookIcon(log.hook) }}</span>
+              <div class="log-content">
+                <span class="log-hook" [style.color]="log.color">{{ log.hook }}</span>
+                <span class="log-message">{{ log.message }}</span>
+              </div>
+              <span class="log-timestamp">{{ log.timestamp }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ========== EXPLICACIÓN DE CADA HOOK ========== -->
+  <div class="section">
+    <h2>📚 Explicación de Lifecycle Hooks</h2>
+    <div class="hooks-grid">
+      
+      <!-- constructor -->
+      <div class="hook-card">
+        <div class="hook-header constructor-bg">
+          <h3>🏗️ constructor()</h3>
+        </div>
+        <div class="hook-body">
+          <p><strong>Cuándo:</strong> Cuando Angular crea el componente (PRIMERO)</p>
+          <p><strong>Uso:</strong> Inyección de dependencias, inicialización básica</p>
+          <p><strong>⚠️ Evitar:</strong> Lógica compleja, llamadas HTTP</p>
+          <div class="code-sample">
+            <pre>constructor(private service: MyService) {{ '{' }}
+  console.log('Componente creado');
+{{ '}' }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ngOnChanges -->
+      <div class="hook-card">
+        <div class="hook-header onchanges-bg">
+          <h3>🔄 ngOnChanges()</h3>
+        </div>
+        <div class="hook-body">
+          <p><strong>Cuándo:</strong> Cuando cambian los valores de @Input</p>
+          <p><strong>Uso:</strong> Reaccionar a cambios en propiedades de entrada</p>
+          <p><strong>✅ Puede ejecutarse:</strong> Múltiples veces</p>
+          <div class="code-sample">
+            <pre>ngOnChanges(changes: SimpleChanges) {{ '{' }}
+  console.log('Input cambió:', changes);
+{{ '}' }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ngOnInit -->
+      <div class="hook-card">
+        <div class="hook-header oninit-bg">
+          <h3>✅ ngOnInit()</h3>
+        </div>
+        <div class="hook-body">
+          <p><strong>Cuándo:</strong> Una vez, después del primer ngOnChanges</p>
+          <p><strong>Uso:</strong> Inicializar datos, llamadas HTTP, suscripciones</p>
+          <p><strong>✅ Lugar ideal para:</strong> Cargar datos del servidor</p>
+          <div class="code-sample">
+            <pre>ngOnInit() {{ '{' }}
+  this.loadData(); // Cargar datos
+  this.initForm();  // Inicializar formulario
+{{ '}' }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ngDoCheck -->
+      <div class="hook-card">
+        <div class="hook-header docheck-bg">
+          <h3>🔍 ngDoCheck()</h3>
+        </div>
+        <div class="hook-body">
+          <p><strong>Cuándo:</strong> En cada ciclo de detección de cambios</p>
+          <p><strong>Uso:</strong> Detección de cambios personalizada</p>
+          <p><strong>⚠️ Cuidado:</strong> Se ejecuta MUY frecuentemente</p>
+          <div class="code-sample">
+            <pre>ngDoCheck() {{ '{' }}
+  // Detectar cambios manualmente
+  // ⚠️ Evitar operaciones costosas
+{{ '}' }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ngAfterContentInit -->
+      <div class="hook-card">
+        <div class="hook-header aftercontent-bg">
+          <h3>📦 ngAfterContentInit()</h3>
+        </div>
+        <div class="hook-body">
+          <p><strong>Cuándo:</strong> Después de proyectar contenido externo</p>
+          <p><strong>Uso:</strong> Trabajar con &lt;ng-content&gt;</p>
+          <p><strong>✅ Se ejecuta:</strong> Una vez</p>
+          <div class="code-sample">
+            <pre>ngAfterContentInit() {{ '{' }}
+  // Contenido proyectado disponible
+  console.log(this.contentChild);
+{{ '}' }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ngAfterViewInit -->
+      <div class="hook-card">
+        <div class="hook-header afterview-bg">
+          <h3>👁️ ngAfterViewInit()</h3>
+        </div>
+        <div class="hook-body">
+          <p><strong>Cuándo:</strong> Después de inicializar la vista del componente</p>
+          <p><strong>Uso:</strong> Acceder a @ViewChild, @ViewChildren</p>
+          <p><strong>✅ ViewChild disponible:</strong> Aquí es seguro usarlo</p>
+          <div class="code-sample">
+            <pre>ngAfterViewInit() {{ '{' }}
+  // ViewChild ya está disponible
+  this.myInput.nativeElement.focus();
+{{ '}' }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ngOnDestroy -->
+      <div class="hook-card">
+        <div class="hook-header ondestroy-bg">
+          <h3>💀 ngOnDestroy()</h3>
+        </div>
+        <div class="hook-body">
+          <p><strong>Cuándo:</strong> Justo antes de destruir el componente</p>
+          <p><strong>Uso:</strong> Limpiar suscripciones, timers, listeners</p>
+          <p><strong>⚠️ Importante:</strong> Evitar memory leaks</p>
+          <div class="code-sample">
+            <pre>ngOnDestroy() {{ '{' }}
+  clearInterval(this.timer);
+  this.subscription.unsubscribe();
+{{ '}' }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Otros hooks -->
+      <div class="hook-card">
+        <div class="hook-header other-bg">
+          <h3>✔️ Otros Hooks</h3>
+        </div>
+        <div class="hook-body">
+          <p><strong>ngAfterContentChecked:</strong> Después de verificar contenido</p>
+          <p><strong>ngAfterViewChecked:</strong> Después de verificar vista</p>
+          <p><strong>⚠️ Nota:</strong> Se ejecutan muy frecuentemente</p>
+          <div class="code-sample">
+            <pre>// Se ejecutan en cada ciclo
+// de detección de cambios
+ngAfterViewChecked() {{ '{' }}
+  // ...
+{{ '}' }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MEJORES PRÁCTICAS ========== -->
+  <div class="section best-practices">
+    <h2>💡 Mejores Prácticas</h2>
+    <div class="practices-grid">
+      <div class="practice-card success">
+        <h3>✅ SÍ hacer</h3>
+        <ul>
+          <li>Usar <strong>ngOnInit()</strong> para cargar datos</li>
+          <li>Limpiar en <strong>ngOnDestroy()</strong></li>
+          <li>Acceder a ViewChild en <strong>ngAfterViewInit()</strong></li>
+          <li>Mantener constructor simple (solo DI)</li>
+          <li>Usar <strong>ngOnChanges()</strong> para reaccionar a @Input</li>
+        </ul>
+      </div>
+      <div class="practice-card danger">
+        <h3>❌ NO hacer</h3>
+        <ul>
+          <li>Lógica compleja en <strong>constructor</strong></li>
+          <li>Olvidar limpiar suscripciones</li>
+          <li>Operaciones costosas en <strong>ngDoCheck()</strong></li>
+          <li>Acceder a ViewChild en <strong>constructor</strong></li>
+          <li>Llamadas HTTP en <strong>constructor</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

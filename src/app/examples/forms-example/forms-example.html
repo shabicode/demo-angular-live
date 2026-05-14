@@ -1,0 +1,447 @@
+<div class="forms-container">
+  <h1>🎯 Ejemplos de Formularios en Angular</h1>
+  <p class="subtitle">Demostración de Template-driven Forms vs Reactive Forms</p>
+
+  <!-- ========== SECCIÓN 1: TEMPLATE-DRIVEN FORM ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>📝 1. Template-Driven Form (Formulario Dirigido por Plantilla)</h2>
+      <p class="description">
+        Usa <code>ngModel</code> para enlace bidireccional. Validaciones en HTML.
+        <strong>Ideal para formularios simples.</strong>
+      </p>
+    </div>
+
+    <div class="form-wrapper">
+      <form #templateForm="ngForm" (ngSubmit)="onTemplateSubmit(templateForm)" class="demo-form">
+        
+        <!-- Nombre -->
+        <div class="form-group">
+          <label for="templateNombre">Nombre:</label>
+          <input
+            type="text"
+            id="templateNombre"
+            name="nombre"
+            [(ngModel)]="templateUser.nombre"
+            #nombreInput="ngModel"
+            required
+            minlength="3"
+            class="form-control"
+          />
+          
+          <!-- Clases CSS automáticas: ng-valid, ng-invalid, ng-touched -->
+          <div class="css-classes">
+            <span class="badge" [class.active]="nombreInput.valid">ng-valid</span>
+            <span class="badge" [class.active]="nombreInput.invalid">ng-invalid</span>
+            <span class="badge" [class.active]="nombreInput.touched">ng-touched</span>
+            <span class="badge" [class.active]="nombreInput.dirty">ng-dirty</span>
+          </div>
+
+          @if (nombreInput.invalid && (nombreInput.dirty || nombreInput.touched || templateSubmitted)) {
+            <div class="error-message">
+              @if (nombreInput.errors?.['required']) {
+                <span>❌ El nombre es requerido</span>
+              }
+              @if (nombreInput.errors?.['minlength']) {
+                <span>❌ Debe tener al menos 3 caracteres</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="templateEmail">Email:</label>
+          <input
+            type="email"
+            id="templateEmail"
+            name="email"
+            [(ngModel)]="templateUser.email"
+            #emailInput="ngModel"
+            required
+            email
+            class="form-control"
+          />
+
+          <div class="css-classes">
+            <span class="badge" [class.active]="emailInput.valid">ng-valid</span>
+            <span class="badge" [class.active]="emailInput.invalid">ng-invalid</span>
+            <span class="badge" [class.active]="emailInput.touched">ng-touched</span>
+          </div>
+
+          @if (emailInput.invalid && (emailInput.dirty || emailInput.touched || templateSubmitted)) {
+            <div class="error-message">
+              @if (emailInput.errors?.['required']) {
+                <span>❌ El email es requerido</span>
+              }
+              @if (emailInput.errors?.['email']) {
+                <span>❌ Debe ser un email válido</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Edad -->
+        <div class="form-group">
+          <label for="templateEdad">Edad:</label>
+          <input
+            type="number"
+            id="templateEdad"
+            name="edad"
+            [(ngModel)]="templateUser.edad"
+            #edadInput="ngModel"
+            required
+            min="18"
+            max="100"
+            class="form-control"
+          />
+
+          <div class="css-classes">
+            <span class="badge" [class.active]="edadInput.valid">ng-valid</span>
+            <span class="badge" [class.active]="edadInput.invalid">ng-invalid</span>
+          </div>
+
+          @if (edadInput.invalid && (edadInput.dirty || edadInput.touched || templateSubmitted)) {
+            <div class="error-message">
+              @if (edadInput.errors?.['required']) {
+                <span>❌ La edad es requerida</span>
+              }
+              @if (edadInput.errors?.['min']) {
+                <span>❌ Debe ser mayor de 18 años</span>
+              }
+              @if (edadInput.errors?.['max']) {
+                <span>❌ Edad máxima: 100 años</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Comentarios (opcional) -->
+        <div class="form-group">
+          <label for="templateComentarios">Comentarios (opcional):</label>
+          <textarea
+            id="templateComentarios"
+            name="comentarios"
+            [(ngModel)]="templateUser.comentarios"
+            rows="3"
+            class="form-control"
+          ></textarea>
+        </div>
+
+        <!-- Form Status -->
+        <div class="form-status">
+          <strong>Estado del Formulario:</strong>
+          @if (templateForm.valid) {
+            <span class="status-valid">✅ Válido</span>
+          } @else {
+            <span class="status-invalid">❌ Inválido</span>
+          }
+        </div>
+
+        <!-- Botones -->
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">
+            Enviar (Template-driven)
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetTemplateForm(templateForm)">
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-info" (click)="fillTemplateForm()">
+            Rellenar Datos Demo
+          </button>
+        </div>
+      </form>
+
+      <!-- Vista de Datos -->
+      <div class="data-preview">
+        <h3>📊 Vista de Datos (ngModel binding):</h3>
+        <pre>{{ templateUser | json }}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SECCIÓN 2: REACTIVE FORM ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>⚡ 2. Reactive Form (Formulario Reactivo)</h2>
+      <p class="description">
+        Usa <code>FormGroup</code> y <code>FormControl</code>. Validaciones en TypeScript.
+        <strong>Ideal para formularios complejos y profesionales.</strong>
+      </p>
+    </div>
+
+    <div class="form-wrapper">
+      <form [formGroup]="reactiveForm" (ngSubmit)="onReactiveSubmit()" class="demo-form">
+        
+        <!-- Nombre -->
+        <div class="form-group">
+          <label for="reactiveNombre">Nombre:</label>
+          <input
+            type="text"
+            id="reactiveNombre"
+            formControlName="nombre"
+            class="form-control"
+            [class.is-invalid]="hasError('nombre', 'required') || hasError('nombre', 'minlength')"
+          />
+
+          <div class="css-classes">
+            <span class="badge" [class.active]="nombre?.valid">ng-valid</span>
+            <span class="badge" [class.active]="nombre?.invalid">ng-invalid</span>
+            <span class="badge" [class.active]="nombre?.touched">ng-touched</span>
+            <span class="badge" [class.active]="nombre?.dirty">ng-dirty</span>
+          </div>
+
+          @if (hasError('nombre', 'required')) {
+            <div class="error-message">❌ El nombre es requerido</div>
+          }
+          @if (hasError('nombre', 'minlength')) {
+            <div class="error-message">❌ Debe tener al menos 3 caracteres</div>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="reactiveEmail">Email:</label>
+          <input
+            type="email"
+            id="reactiveEmail"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="hasError('email', 'required') || hasError('email', 'email')"
+          />
+
+          <div class="css-classes">
+            <span class="badge" [class.active]="email?.valid">ng-valid</span>
+            <span class="badge" [class.active]="email?.invalid">ng-invalid</span>
+          </div>
+
+          @if (hasError('email', 'required')) {
+            <div class="error-message">❌ El email es requerido</div>
+          }
+          @if (hasError('email', 'email')) {
+            <div class="error-message">❌ Debe ser un email válido</div>
+          }
+        </div>
+
+        <!-- Edad -->
+        <div class="form-group">
+          <label for="reactiveEdad">Edad:</label>
+          <input
+            type="number"
+            id="reactiveEdad"
+            formControlName="edad"
+            class="form-control"
+          />
+
+          @if (hasError('edad', 'required')) {
+            <div class="error-message">❌ La edad es requerida</div>
+          }
+          @if (hasError('edad', 'min')) {
+            <div class="error-message">❌ Debe ser mayor de 18 años</div>
+          }
+          @if (hasError('edad', 'max')) {
+            <div class="error-message">❌ Edad máxima: 100 años</div>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="reactivePassword">Contraseña:</label>
+          <input
+            type="password"
+            id="reactivePassword"
+            formControlName="password"
+            class="form-control"
+          />
+
+          @if (hasError('password', 'required')) {
+            <div class="error-message">❌ La contraseña es requerida</div>
+          }
+          @if (hasError('password', 'minlength')) {
+            <div class="error-message">❌ Debe tener al menos 6 caracteres</div>
+          }
+        </div>
+
+        <!-- Confirmar Password -->
+        <div class="form-group">
+          <label for="reactiveConfirmPassword">Confirmar Contraseña:</label>
+          <input
+            type="password"
+            id="reactiveConfirmPassword"
+            formControlName="confirmPassword"
+            class="form-control"
+          />
+
+          @if (hasError('confirmPassword', 'required')) {
+            <div class="error-message">❌ Debe confirmar la contraseña</div>
+          }
+        </div>
+
+        <!-- Form Status -->
+        <div class="form-status">
+          <strong>Estado del Formulario:</strong>
+          <span [class.status-valid]="reactiveForm.valid" [class.status-invalid]="reactiveForm.invalid">
+            {{ formStatus }}
+          </span>
+          <div class="form-flags">
+            <span class="flag" [class.active]="formTouched">Touched: {{ formTouched }}</span>
+            <span class="flag" [class.active]="formDirty">Dirty: {{ formDirty }}</span>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary" [disabled]="reactiveForm.invalid">
+            Enviar (Reactive)
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetReactiveForm()">
+            Limpiar
+          </button>
+          <button type="button" class="btn btn-info" (click)="fillReactiveForm()">
+            Rellenar Datos Demo
+          </button>
+          <button type="button" class="btn btn-warning" (click)="markAllAsTouched()">
+            Marcar Todos como Tocados
+          </button>
+        </div>
+      </form>
+
+      <!-- Vista de Datos -->
+      <div class="data-preview">
+        <h3>📊 Vista de Datos (FormGroup value):</h3>
+        <pre>{{ reactiveForm.value | json }}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SECCIÓN 3: FORMCONTROL STANDALONE ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🔍 3. FormControl Standalone (Control Individual)</h2>
+      <p class="description">
+        Usa <code>FormControl</code> de forma independiente, sin necesidad de FormGroup.
+        <strong>Ideal para búsquedas, filtros, campos individuales.</strong>
+      </p>
+    </div>
+
+    <div class="form-wrapper">
+      <div class="search-box">
+        <label for="searchInput">Búsqueda (mínimo 3 caracteres):</label>
+        <div class="search-input-group">
+          <input
+            type="text"
+            id="searchInput"
+            [formControl]="searchControl"
+            placeholder="Escribe para buscar..."
+            class="form-control search-input"
+          />
+          <button type="button" class="btn btn-primary" (click)="onSearch()">
+            🔍 Buscar
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="clearSearch()">
+            ✖️ Limpiar
+          </button>
+        </div>
+
+        <!-- Estado del Control -->
+        <div class="control-status">
+          <strong>Estado:</strong> 
+          <span [class.status-valid]="searchControl.valid" [class.status-invalid]="searchControl.invalid && searchControl.touched">
+            {{ searchStatus }}
+          </span>
+          <div class="css-classes">
+            <span class="badge" [class.active]="searchControl.valid">valid</span>
+            <span class="badge" [class.active]="searchControl.invalid">invalid</span>
+            <span class="badge" [class.active]="searchControl.touched">touched</span>
+            <span class="badge" [class.active]="searchControl.dirty">dirty</span>
+          </div>
+        </div>
+
+        @if (searchControl.invalid && searchControl.touched) {
+          <div class="error-message">
+            ❌ Debe ingresar al menos 3 caracteres
+          </div>
+        }
+
+        <!-- Valor actual -->
+        <div class="data-preview">
+          <h3>📊 Valor actual:</h3>
+          <pre>{{ searchControl.value || '(vacío)' }}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SECCIÓN 4: REFERENCIA DE TEMPLATE (#) ========== -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🏷️ 4. Template Reference Variables (#)</h2>
+      <p class="description">
+        Usa <code>#variableName</code> para referenciar elementos DOM en la plantilla.
+        <strong>Útil para acceder a propiedades y métodos de elementos HTML.</strong>
+      </p>
+    </div>
+
+    <div class="form-wrapper">
+      <div class="demo-form">
+        <div class="form-group">
+          <label for="demoInput">Input con referencia #miInput:</label>
+          <input
+            type="text"
+            id="demoInput"
+            #miInput
+            class="form-control"
+            placeholder="Escribe algo..."
+          />
+        </div>
+
+        <div class="reference-info">
+          <h3>📋 Información del Input:</h3>
+          <ul>
+            <li><strong>Valor:</strong> {{ miInput.value || '(vacío)' }}</li>
+            <li><strong>Tipo:</strong> {{ miInput.type }}</li>
+          </ul>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-primary" (click)="miInput.focus()">
+            🎯 Enfocar Input
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="miInput.value = ''">
+            ✖️ Limpiar
+          </button>
+          <button type="button" class="btn btn-info" (click)="miInput.value = 'Texto desde botón'">
+            ✏️ Escribir Texto
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== COMPARACIÓN FINAL ========== -->
+  <div class="section comparison">
+    <h2>📊 Comparación: Template-driven vs Reactive</h2>
+    <div class="comparison-grid">
+      <div class="comparison-item">
+        <h3>📝 Template-driven</h3>
+        <ul>
+          <li>✅ Más simple y rápido</li>
+          <li>✅ Ideal para formularios pequeños</li>
+          <li>✅ Menos código TypeScript</li>
+          <li>❌ Validaciones en HTML</li>
+          <li>❌ Difícil de testear</li>
+        </ul>
+      </div>
+      <div class="comparison-item">
+        <h3>⚡ Reactive</h3>
+        <ul>
+          <li>✅ Más control y flexibilidad</li>
+          <li>✅ Ideal para formularios complejos</li>
+          <li>✅ Validaciones dinámicas</li>
+          <li>✅ Fácil de testear</li>
+          <li>❌ Más código TypeScript</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
