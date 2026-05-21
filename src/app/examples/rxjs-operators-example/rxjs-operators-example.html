@@ -1,0 +1,256 @@
+<div class="rxjs-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>⚡ RxJS Operators - Operadores Importantes</h1>
+    <p class="subtitle">Aprende los operadores más usados de RxJS en Angular</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- Column 1: Operators Demos -->
+    <div class="demos-section">
+      
+      <!-- map() -->
+      <div class="demo-card">
+        <h2>🗺️ map() - Transformación</h2>
+        <p>Transforma cada valor emitido aplicando una función</p>
+        <button class="btn btn-primary" (click)="demoMap()">Ejecutar map()</button>
+        @if (mapResults.length > 0) {
+          <div class="result">
+            <strong>Original:</strong> [1, 2, 3, 4, 5]<br>
+            <strong>Con map(x => x * 10):</strong> [{{ mapResults.join(', ') }}]
+          </div>
+        }
+      </div>
+
+      <!-- filter() -->
+      <div class="demo-card">
+        <h2>🔍 filter() - Filtrado</h2>
+        <p>Filtra valores que cumplen una condición</p>
+        <button class="btn btn-warning" (click)="demoFilter()">Ejecutar filter()</button>
+        @if (filterResults.length > 0) {
+          <div class="result">
+            <strong>Original:</strong> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]<br>
+            <strong>Solo pares:</strong> [{{ filterResults.join(', ') }}]
+          </div>
+        }
+      </div>
+
+      <!-- tap() -->
+      <div class="demo-card">
+        <h2>👁️ tap() - Side Effects</h2>
+        <p>Ejecuta acciones sin modificar el stream (debugging)</p>
+        <button class="btn btn-danger" (click)="demoTap()">Ejecutar tap()</button>
+        <div class="info">
+          <small>💡 tap() es perfecto para debugging y logs sin afectar los datos</small>
+        </div>
+      </div>
+
+      <!-- debounceTime() -->
+      <div class="demo-card">
+        <h2>⏱️ debounceTime() - Anti-rebote</h2>
+        <p>Espera que el usuario deje de escribir antes de buscar</p>
+        <input 
+          type="text" 
+          class="form-input"
+          placeholder="Escribe para buscar..." 
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange(searchTerm)"
+        />
+        @if (searchResults.length > 0) {
+          <div class="result">
+            <strong>Resultados:</strong>
+            <ul>
+              @for (result of searchResults; track result) {
+                <li>{{ result }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+
+      <!-- switchMap() -->
+      <div class="demo-card">
+        <h2>🔄 switchMap() - Cancelar anterior</h2>
+        <p>Cancela la petición anterior cuando llega una nueva</p>
+        <button class="btn btn-purple" (click)="demoSwitchMap()">Ejecutar switchMap()</button>
+        @if (switchMapResult) {
+          <div class="result">
+            <strong>Resultado:</strong> {{ switchMapResult }}
+          </div>
+        }
+        <div class="info">
+          <small>💡 Perfecto para búsquedas: cancela peticiones antiguas</small>
+        </div>
+      </div>
+
+      <!-- mergeMap() -->
+      <div class="demo-card">
+        <h2>🔀 mergeMap() - Ejecutar en paralelo</h2>
+        <p>Ejecuta múltiples peticiones en paralelo sin cancelar</p>
+        <button class="btn btn-indigo" (click)="demoMergeMap()">Ejecutar mergeMap()</button>
+        @if (mergeMapResults.length > 0) {
+          <div class="result">
+            <strong>Peticiones completadas:</strong>
+            <ul>
+              @for (result of mergeMapResults; track result) {
+                <li>{{ result }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+
+      <!-- interval con take() -->
+      <div class="demo-card">
+        <h2>⏱️ interval() + take()</h2>
+        <p>Contador que emite valores cada segundo (limitado a 5)</p>
+        <button 
+          class="btn btn-info" 
+          (click)="demoInterval()"
+          [disabled]="isObservableRunning"
+        >
+          {{ isObservableRunning ? 'Ejecutando...' : 'Ejecutar interval()' }}
+        </button>
+        @if (counter > 0) {
+          <div class="result counter">
+            <strong>Contador:</strong> {{ counter }}
+          </div>
+        }
+      </div>
+
+      <!-- catchError() -->
+      <div class="demo-card">
+        <h2>🚨 catchError() - Manejo de errores</h2>
+        <p>Captura errores y devuelve un valor por defecto</p>
+        <button class="btn btn-error" (click)="demoCatchError()">Ejecutar catchError()</button>
+        <div class="info">
+          <small>💡 Simula un error en el número 3 y lo maneja con gracia</small>
+        </div>
+      </div>
+
+      <!-- combineLatest -->
+      <div class="demo-card">
+        <h2>🔗 combineLatest - Combinar streams</h2>
+        <p>Combina múltiples observables y emite cuando alguno cambia</p>
+        <button class="btn btn-brown" (click)="demoCombineLatest()">Ejecutar combineLatest</button>
+        @if (combineLatestResult) {
+          <div class="result">
+            <strong>Clima combinado:</strong> {{ combineLatestResult }}
+          </div>
+        }
+      </div>
+
+      <!-- Subject Demo -->
+      <div class="demo-card">
+        <h2>🖱️ Subject - Click listener</h2>
+        <p>Subject con debounceTime para eventos de click</p>
+        <div class="button-group">
+          <button class="btn btn-sm" (click)="onButtonClick('Botón 1')">Click 1</button>
+          <button class="btn btn-sm" (click)="onButtonClick('Botón 2')">Click 2</button>
+          <button class="btn btn-sm" (click)="onButtonClick('Botón 3')">Click 3</button>
+        </div>
+        <div class="info">
+          <small>💡 Usa debounceTime para evitar múltiples clicks rápidos</small>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Column 2: Logs -->
+    <div class="logs-section">
+      <div class="logs-header">
+        <h2>📋 Log de Operaciones</h2>
+        <button class="btn btn-sm btn-secondary" (click)="clearLogs()">🗑️ Limpiar</button>
+      </div>
+      
+      <div class="logs-container">
+        @if (logs.length === 0) {
+          <div class="no-logs">
+            <p>👆 Ejecuta una demo para ver los logs</p>
+          </div>
+        } @else {
+          @for (log of logs; track $index) {
+            <div class="log-entry" [style.border-left-color]="log.color">
+              <div class="log-header-row">
+                <span class="log-icon">{{ getOperatorIcon(log.operator) }}</span>
+                <span class="log-operator">{{ log.operator }}</span>
+                <span class="log-time">{{ log.timestamp }}</span>
+              </div>
+              <div class="log-message">{{ log.message }}</div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Important Operators Reference -->
+  <div class="reference-section">
+    <h2>📚 Referencia Rápida de Operadores</h2>
+    <div class="operators-grid">
+      <div class="operator-ref">
+        <strong>map</strong>
+        <p>Transforma cada valor</p>
+      </div>
+      <div class="operator-ref">
+        <strong>filter</strong>
+        <p>Filtra valores</p>
+      </div>
+      <div class="operator-ref">
+        <strong>tap</strong>
+        <p>Side effects (logs)</p>
+      </div>
+      <div class="operator-ref">
+        <strong>debounceTime</strong>
+        <p>Espera antes de emitir</p>
+      </div>
+      <div class="operator-ref">
+        <strong>switchMap</strong>
+        <p>Cancela el anterior</p>
+      </div>
+      <div class="operator-ref">
+        <strong>mergeMap</strong>
+        <p>Ejecuta en paralelo</p>
+      </div>
+      <div class="operator-ref">
+        <strong>catchError</strong>
+        <p>Maneja errores</p>
+      </div>
+      <div class="operator-ref">
+        <strong>combineLatest</strong>
+        <p>Combina streams</p>
+      </div>
+      <div class="operator-ref">
+        <strong>take</strong>
+        <p>Limita emisiones</p>
+      </div>
+      <div class="operator-ref">
+        <strong>takeUntil</strong>
+        <p>Completa en señal</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips Section -->
+  <div class="tips-section">
+    <h2>💡 Tips Importantes</h2>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <h3>🔍 Usa tap() para debugging</h3>
+        <p>No modifica los datos, perfecto para console.log</p>
+      </div>
+      <div class="tip-card">
+        <h3>⏱️ debounceTime en búsquedas</h3>
+        <p>Evita peticiones innecesarias mientras el usuario escribe</p>
+      </div>
+      <div class="tip-card">
+        <h3>🔄 switchMap vs mergeMap</h3>
+        <p>switchMap cancela, mergeMap ejecuta todas en paralelo</p>
+      </div>
+      <div class="tip-card">
+        <h3>🛡️ Siempre usa takeUntil</h3>
+        <p>Previene memory leaks al destruir el componente</p>
+      </div>
+    </div>
+  </div>
+</div>

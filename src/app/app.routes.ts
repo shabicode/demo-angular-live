@@ -31,5 +31,13 @@ export const routes: Routes = [
     path: 'examples/forms',
     loadComponent: () => import('./examples/forms-example/forms-example').then(m => m.FormsExampleComponent)
     },
+    { 
+    path: 'examples/rxjs',
+    loadComponent: () => import('./examples/rxjs-operators-example/rxjs-operators-example').then(m => m.RxjsOperatorsExampleComponent)
+    },
+    { 
+    path: 'examples/signals',
+    loadComponent: () => import('./examples/signals-example/signals-example').then(m => m.SignalsExampleComponent)
+    },
     { path: '**', redirectTo: '' }
 ];

@@ -1,5 +1,20 @@
 # 🎓 Mentoría Angular: Routing, Guards y ViewChild
 
+---
+
+## 🎯 MENÚ DE PRESENTACIÓN
+
+> **👉 ¿VAS A DAR LA CLASE? [ABRE EL MENÚ DE TEMAS AQUÍ →](MENU-TEMAS-PRESENTACION.md)**
+
+Este menú visual contiene:
+- ✅ Todos los temas organizados por bloques con tiempos
+- ✅ Lista de qué archivos mostrar en cada tema
+- ✅ Demos específicas del navegador para cada concepto
+- ✅ Hoja de ruta completa de 4 horas
+- ✅ Tips para el instructor
+
+---
+
 ## 📋 Descripción
 
 Este proyecto contiene una **aplicación Angular completa** diseñada específicamente para enseñar los conceptos fundamentales de Angular moderna a través de ejemplos prácticos y código real.
@@ -19,6 +34,19 @@ Al finalizar esta mentoría, los estudiantes serán capaces de:
 ---
 
 ## 📚 Recursos Incluidos
+
+### 0. **MENU-TEMAS-PRESENTACION.md** 🎯
+**Menú visual para presentaciones** con:
+- Hoja de ruta completa de 4 horas con tiempos
+- Todos los 33 temas organizados en bloques
+- Lista de archivos a mostrar en cada tema
+- Demos específicas del navegador
+- Tips para el instructor
+- Resumen visual de conceptos
+
+**Mejor para:** Tener abierto durante la presentación, mostrar al inicio de la clase
+
+---
 
 ### 1. **GUIA-MENTORIA-ANGULAR.md** 📖
 **Guía completa y detallada** con:

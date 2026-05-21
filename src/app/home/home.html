@@ -1,1 +1,107 @@
-<p>home works!</p>
+<div class="home-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🎓 Mentoría Angular - Temas a Cubrir</h1>
+    <p class="subtitle">Angular 21.2 | Demo Interactivo</p>
+    
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-number">{{ blocks.length }}</div>
+        <div class="stat-label">Bloques</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ getTotalTopics() }}</div>
+        <div class="stat-label">Temas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ getTotalItems() }}</div>
+        <div class="stat-label">Conceptos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blocks -->
+  <div class="blocks-container">
+    @for (block of blocks; track block.title) {
+      <div class="block-card" [style.border-left-color]="block.color">
+        <!-- Block Header -->
+        <div class="block-header" (click)="toggleBlock(block)">
+          <div class="block-title-section">
+            <span class="block-icon">{{ block.icon }}</span>
+            <div>
+              <h2 class="block-title">{{ block.title }}</h2>
+              <span class="block-time">⏱️ {{ block.time }} | {{ block.topics.length }} temas</span>
+            </div>
+          </div>
+          <span class="toggle-icon">{{ block.expanded ? '▼' : '▶' }}</span>
+        </div>
+
+        <!-- Block Content -->
+        @if (block.expanded) {
+          <div class="block-content">
+            @for (topic of block.topics; track topic.number) {
+              <div class="topic-card">
+                <div class="topic-header">
+                  <span class="topic-number">{{ topic.number }}</span>
+                  <span class="topic-icon">{{ topic.icon }}</span>
+                  <h3 class="topic-title">{{ topic.title }}</h3>
+                  @if (topic.demoRoute) {
+                    <a [routerLink]="topic.demoRoute" class="demo-link">
+                      🎯 Ver Demo
+                    </a>
+                  }
+                </div>
+                
+                <ul class="topic-items">
+                  @for (item of topic.items; track item) {
+                    <li>✅ {{ item }}</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Quick Links -->
+  <div class="quick-links">
+    <h3>🚀 Accesos Rápidos</h3>
+    <div class="links-grid">
+      <a routerLink="/login" class="quick-link" style="background: #1976d2;">
+        🔐 Login
+      </a>
+      <a routerLink="/cursos" class="quick-link" style="background: #4caf50;">
+        📚 Cursos
+      </a>
+      <a routerLink="/demo" class="quick-link" style="background: #e91e63;">
+        🎨 Demo (Decoradores)
+      </a>
+      <a routerLink="/demo2" class="quick-link" style="background: #9c27b0;">
+        ⚡ Demo 2 (Signals)
+      </a>
+      <a routerLink="/examples/control-flow" class="quick-link" style="background: #ff9800;">
+        🔄 Control Flow
+      </a>
+      <a routerLink="/examples/lifecycle" class="quick-link" style="background: #00bcd4;">
+        🔄 Lifecycle
+      </a>
+      <a routerLink="/examples/forms" class="quick-link" style="background: #f44336;">
+        📝 Formularios
+      </a>
+      <a routerLink="/examples/rxjs" class="quick-link" style="background: #00bcd4;">
+        🌊 RxJS Operators
+      </a>
+      <a routerLink="/examples/signals" class="quick-link" style="background: #9c27b0;">
+        ⚡ Signals Completo
+      </a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>💡 Haz clic en cada bloque para ver los temas detallados</p>
+    <p>🎯 Usa "Ver Demo" para ir directamente a los ejemplos prácticos</p>
+  </div>
+</div>

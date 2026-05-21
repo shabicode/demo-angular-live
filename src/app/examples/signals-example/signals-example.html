@@ -1,0 +1,327 @@
+<div class="signals-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>⚡ Signals - Angular 17+</h1>
+    <p class="subtitle">Sistema de reactividad moderno y eficiente</p>
+  </div>
+
+  <div class="content-grid">
+    <!-- Column 1: Demos -->
+    <div class="demos-column">
+      
+      <!-- Counter Demo -->
+      <div class="section-card">
+        <h2>🔢 Signal Básico - Contador</h2>
+        <p>Signals para valores primitivos con <code>.set()</code> y <code>.update()</code></p>
+        
+        <div class="counter-display">
+          <div class="count-value">{{ count() }}</div>
+          <div class="double-count">Double: {{ doubleCount() }}</div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-success" (click)="increment()">➕ Incrementar</button>
+          <button class="btn btn-warning" (click)="decrement()">➖ Decrementar</button>
+          <button class="btn btn-danger" (click)="reset()">🔄 Reset</button>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-sm btn-secondary" (click)="setCount(10)">Set 10</button>
+          <button class="btn btn-sm btn-secondary" (click)="setCount(25)">Set 25</button>
+          <button class="btn btn-sm btn-secondary" (click)="setCount(50)">Set 50</button>
+        </div>
+
+        <div class="code-example">
+          <strong>💡 Código:</strong>
+          <pre>count = signal(0);
+count.set(10);           // Establecer valor
+count.update(v => v + 1); // Basado en anterior</pre>
+        </div>
+      </div>
+
+      <!-- User Demo -->
+      <div class="section-card">
+        <h2>👤 Signal de Objeto</h2>
+        <p>Actualizar propiedades de objetos con spread operator</p>
+        
+        <div class="user-info">
+          <p><strong>Info:</strong> {{ userInfo() }}</p>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre:</label>
+          <input 
+            type="text" 
+            class="form-input"
+            [value]="user().name"
+            (input)="updateUserName($any($event.target).value)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Edad:</label>
+          <input 
+            type="number" 
+            class="form-input"
+            [value]="user().age"
+            (input)="updateUserAge(+$any($event.target).value)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Email:</label>
+          <input 
+            type="email" 
+            class="form-input"
+            [value]="user().email"
+            (input)="updateUserEmail($any($event.target).value)"
+          />
+        </div>
+
+        <div class="code-example">
+          <strong>💡 Código:</strong>
+          <pre>user = signal({{ '{' }} name: 'Juan', age: 25 {{ '}' }});
+user.update(u => ({{ '{' }} ...u, age: 26 {{ '}' }}));</pre>
+        </div>
+      </div>
+
+      <!-- Task Manager -->
+      <div class="section-card tasks-section">
+        <h2>📋 Signal de Array - Gestor de Tareas</h2>
+        <p>Gestión completa de una lista de tareas con computed signals</p>
+
+        <!-- Add Task Form -->
+        <div class="add-task-form">
+          <input 
+            type="text"
+            class="form-input"
+            placeholder="Nueva tarea..."
+            [value]="newTaskTitle()"
+            (input)="newTaskTitle.set($any($event.target).value)"
+            (keyup.enter)="addTask()"
+          />
+          <select 
+            class="form-select"
+            [value]="selectedPriority()"
+            (change)="selectedPriority.set($any($event.target).value)"
+          >
+            <option value="low">🟢 Baja</option>
+            <option value="medium">🟡 Media</option>
+            <option value="high">🔴 Alta</option>
+          </select>
+          <button class="btn btn-primary" (click)="addTask()">➕ Agregar</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-number">{{ tasks().length }}</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">{{ completedTasks().length }}</div>
+            <div class="stat-label">Completadas</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">{{ pendingTasks().length }}</div>
+            <div class="stat-label">Pendientes</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">{{ completionPercentage() }}%</div>
+            <div class="stat-label">Progreso</div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+          <div 
+            class="progress-fill" 
+            [style.width.%]="completionPercentage()"
+          ></div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+          <button 
+            class="filter-btn"
+            [class.active]="filterStatus() === 'all'"
+            (click)="setFilter('all')"
+          >
+            Todas ({{ tasks().length }})
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="filterStatus() === 'completed'"
+            (click)="setFilter('completed')"
+          >
+            Completadas ({{ completedTasks().length }})
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="filterStatus() === 'pending'"
+            (click)="setFilter('pending')"
+          >
+            Pendientes ({{ pendingTasks().length }})
+          </button>
+        </div>
+
+        <!-- Task List -->
+        <div class="task-list">
+          @if (filteredTasks().length === 0) {
+            <div class="empty-state">
+              @if (filterStatus() === 'all') {
+                <p>📭 No hay tareas</p>
+              } @else if (filterStatus() === 'completed') {
+                <p>📭 No hay tareas completadas</p>
+              } @else {
+                <p>📭 No hay tareas pendientes</p>
+              }
+            </div>
+          } @else {
+            @for (task of filteredTasks(); track task.id) {
+              <div class="task-item" [class.completed]="task.completed">
+                <div class="task-content">
+                  <input 
+                    type="checkbox"
+                    [checked]="task.completed"
+                    (change)="toggleTask(task.id)"
+                  />
+                  <span class="task-title" [class.strikethrough]="task.completed">
+                    {{ task.title }}
+                  </span>
+                  <span 
+                    class="priority-badge"
+                    [style.background-color]="getPriorityColor(task.priority)"
+                  >
+                    {{ getPriorityIcon(task.priority) }} {{ task.priority }}
+                  </span>
+                </div>
+                <div class="task-actions">
+                  <select 
+                    class="priority-select"
+                    [value]="task.priority"
+                    (change)="changePriority(task.id, $any($event.target).value)"
+                  >
+                    <option value="low">🟢 Baja</option>
+                    <option value="medium">🟡 Media</option>
+                    <option value="high">🔴 Alta</option>
+                  </select>
+                  <button class="btn-icon btn-delete" (click)="deleteTask(task.id)">🗑️</button>
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions">
+          <button class="btn btn-sm btn-success" (click)="completeAll()">✅ Completar Todas</button>
+          <button class="btn btn-sm btn-danger" (click)="clearCompleted()">🗑️ Limpiar Completadas</button>
+        </div>
+
+        <!-- High Priority Alert -->
+        @if (highPriorityTasks().length > 0) {
+          <div class="alert alert-warning">
+            ⚠️ Tienes {{ highPriorityTasks().length }} tarea(s) de alta prioridad pendiente(s)
+          </div>
+        }
+      </div>
+
+      <!-- Demo Buttons -->
+      <div class="section-card">
+        <h2>🎯 Demos Conceptuales</h2>
+        <div class="button-group">
+          <button class="btn btn-purple" (click)="demoComputed()">🧮 Demo Computed</button>
+          <button class="btn btn-indigo" (click)="demoEffect()">🔔 Demo Effect</button>
+        </div>
+      </div>
+
+      <!-- Key Concepts -->
+      <div class="concepts-grid">
+        <div class="concept-card">
+          <h3>⚡ signal()</h3>
+          <p>Valor reactivo que notifica cambios</p>
+        </div>
+        <div class="concept-card">
+          <h3>🧮 computed()</h3>
+          <p>Valor derivado que se recalcula automáticamente</p>
+        </div>
+        <div class="concept-card">
+          <h3>🔔 effect()</h3>
+          <p>Efecto secundario que se ejecuta en cambios</p>
+        </div>
+        <div class="concept-card">
+          <h3>📝 .set()</h3>
+          <p>Establecer valor directamente</p>
+        </div>
+        <div class="concept-card">
+          <h3>🔄 .update()</h3>
+          <p>Actualizar basándose en valor anterior</p>
+        </div>
+        <div class="concept-card">
+          <h3>👁️ ()</h3>
+          <p>Leer el valor actual del signal</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Logs -->
+    <div class="logs-column">
+      <div class="logs-section">
+        <div class="logs-header">
+          <h2>📋 Log de Operaciones</h2>
+          <button class="btn btn-sm btn-secondary" (click)="clearLogs()">🗑️</button>
+        </div>
+        
+        <div class="logs-container">
+          @if (logs().length === 0) {
+            <div class="no-logs">
+              <p>👆 Interactúa con las demos para ver logs</p>
+            </div>
+          } @else {
+            @for (log of logs(); track $index) {
+              <div class="log-entry" [style.border-left-color]="log.color">
+                <div class="log-header-row">
+                  <span class="log-icon">{{ getTypeIcon(log.type) }}</span>
+                  <span class="log-type">{{ log.type }}</span>
+                  <span class="log-time">{{ log.timestamp }}</span>
+                </div>
+                <div class="log-message">{{ log.message }}</div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Section -->
+  <div class="comparison-section">
+    <h2>📊 Signals vs RxJS</h2>
+    <div class="comparison-grid">
+      <div class="comparison-card">
+        <h3>⚡ Signals</h3>
+        <ul>
+          <li>✅ Más simple y directo</li>
+          <li>✅ Mejor performance (fine-grained reactivity)</li>
+          <li>✅ No requiere unsubscribe</li>
+          <li>✅ Sintaxis más limpia</li>
+          <li>✅ Change detection optimizado</li>
+        </ul>
+      </div>
+      <div class="comparison-card">
+        <h3>🌊 RxJS</h3>
+        <ul>
+          <li>✅ Operadores potentes (map, filter, etc.)</li>
+          <li>✅ Manejo de eventos asíncronos complejos</li>
+          <li>✅ Perfecto para HTTP y WebSockets</li>
+          <li>⚠️ Requiere unsubscribe</li>
+          <li>⚠️ Curva de aprendizaje mayor</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip-box">
+      <strong>💡 Recomendación:</strong> Usa Signals para estado local del componente y RxJS para operaciones asíncronas complejas.
+    </div>
+  </div>
+</div>
